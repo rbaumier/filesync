@@ -42,7 +42,8 @@ gaze(directory + '/**/*.js', function (err, watcher) {
   // On file changed
   this.on('changed', function (filepath) {
     sio.emit('file:changed',
-      path.basename(filepath), +new Date(),
+      // path relative to directory
+      filepath.slice(directory.length + 1), +new Date(),
       fs.readFileSync(filepath, 'utf-8') // @todo use async mode
     );
   });
