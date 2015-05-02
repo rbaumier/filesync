@@ -1,7 +1,7 @@
 'use strict';
 angular.module('FileSync')
   .factory('FileService', function (_) {
-    var files = [];
+    var files;
 
     if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
       console.error('The File APIs are not fully supported in this browser.');
@@ -13,8 +13,7 @@ angular.module('FileSync')
     }, false);
 
     function read(filename, f) {
-      if (!files) console.error('You need specify your local folder in order to use the application');
-      if (!filename) console.error('Cannot get the remote file name');
+      if (!files) return console.info('You need specify your local folder in order to use the diff tool');
 
       // only get the local file version
       var editedFile = _.find(files, {
