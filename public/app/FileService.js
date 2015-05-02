@@ -12,30 +12,37 @@ angular.module('FileSync')
       files = _.toArray(e.target.files);
     }, false);
 
-    function read(filename, f) {
-      if (!files) return console.info('You need specify your local folder in order to use the diff tool');
-
-      // only get the local file version
-      var editedFile = _.find(files, {
-        webkitRelativePath: filename
+    function getFile(path) {
+      return _.find(files, {
+        webkitRelativePath: path
       });
-
-      if (!editedFile) return console.error('A file was edited but cannot be found locally');
-
-      // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-        f(null, e.target.result);
-      };
-
-      reader.readAsText(editedFile, 'utf8');
     }
 
+    // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+    function read(path, f) {
+      var file = getFile(path);
+      if (!file) {
+        return console.info('You need specify your local folder in order to use the diff tool');
+      }
 
-    function write() {}
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        f(event.target.result);
+      };
+      reader.readAsText(file, 'utf8');
+    }
+
+    function write(file) {
+
+    }
 
     return {
+      create: function (path, content) {
+        return {
+          path: '' || path,
+          content: '' || content
+        };
+      },
       read: read,
       write: write
     };

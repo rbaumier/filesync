@@ -19,12 +19,15 @@
         <p>Select your project directory</p>
         <input type="file" id="files" webkitdirectory directory multiple />
 
-        <div layout="column" layout-fill ng-controller="FileCtrl as file">
-            <div flex layout="column" layout-gt-md="row">
-              <md-card flex>
-                <pre class="textdiff" line-diff left-obj="file.local" right-obj="file.remote"></pre>
-              </md-card>
-            </div>
+        <div class="file" layout="column" layout-fill ng-controller="FileCtrl as file" ng-show="file.local.content.length > 0">
+          <div class="controls">
+            <button class="btn btn-default import" ng-click="file.write(file.remote)">Import</button>
+          </div>
+          <div flex layout="column" layout-gt-md="row">
+            <md-card flex>
+              <pre class="textdiff" line-diff left-obj="file.local.content" right-obj="file.remote.content"></pre>
+            </md-card>
+          </div>
         </div>
 
         <div class="row-fluid">

@@ -1,17 +1,21 @@
 'use strict';
 angular.module('FileSync').controller('FileCtrl', ['$scope', 'FileService', 'SocketIOService',
   function ($scope, FileService, SocketIOService) {
-    this.local = '';
-    this.remote = '';
-    var self = this;
+    this.local = FileService.create();
+    this.remote = FileService.create();
 
-    SocketIOService.onFileChanged(function (filename, timestamp, content) {
-      FileService.read(filename, function (err, localFile) {
+    var self = this;
+    SocketIOService.onFileChanged(function (path, timestamp, remoteContent) {
+      FileService.read(path, function (localContent) {
         $scope.$apply(function () {
-          self.local = localFile;
-          self.remote = content;
+          self.local = FileService.create(path, localContent);
+          self.remote = FileService.create(path, remoteContent);
         });
       });
     });
+
+    this.write = function(file) {
+      FileService.write(file);
+    };
   }
 ]);
