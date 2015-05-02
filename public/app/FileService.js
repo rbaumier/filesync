@@ -7,12 +7,12 @@ angular.module('FileSync')
       console.error('The File APIs are not fully supported in this browser.');
     }
 
-    // update files on every change
+    // read files on every change
     document.getElementById('files').addEventListener('change', function (e) {
       files = _.toArray(e.target.files);
     }, false);
 
-    function update(filename) {
+    function read(filename, f) {
       if (!files) console.error('You need specify your local folder in order to use the application');
       if (!filename) console.error('Cannot get the remote file name');
 
@@ -27,7 +27,7 @@ angular.module('FileSync')
       var reader = new FileReader();
 
       reader.onload = function (e) {
-        console.log(e.target.result);
+        f(null, e.target.result);
       };
 
       reader.readAsText(editedFile, 'utf8');
@@ -37,7 +37,7 @@ angular.module('FileSync')
     function write() {}
 
     return {
-      update: update,
+      read: read,
       write: write
     };
   });

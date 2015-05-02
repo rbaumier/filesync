@@ -1,11 +1,14 @@
 'use strict';
 angular.module('FileSync').controller('FileCtrl', ['FileService', 'SocketIOService',
   function (FileService, SocketIOService) {
-    this.left = ['first', 'second', 'third', 'fourth'].join('\n');
-    this.right = ['first', 'third', 'second', 'fourth'].join('\n');
+    this.local = '';
+    this.remote = '';
 
-    SocketIOService.onFileChanged(function (filename /*, timestamp, content*/ ) {
-      FileService.update(filename);
-    });
+    SocketIOService.onFileChanged(function (filename, timestamp, content) {
+      FileService.read(filename, function(err, localFile) {
+        this.local = localFile;
+        this.remote = content;
+      }.bind(this));
+    }.bind(this));
   }
 ]);
