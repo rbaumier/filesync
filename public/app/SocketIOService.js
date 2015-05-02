@@ -2,7 +2,7 @@
 angular.module('FileSync')
 	.factory('SocketIOService', ['io', '_', '$timeout', function (io, _, $timeout) {
 		var socket = io();
-		var _onFileChanged = _.noop;
+		var _onFileChanged = [];
 		var _onVisibilityStatesChanged = _.noop;
 
 		socket.on('connect', function () {
@@ -11,7 +11,9 @@ angular.module('FileSync')
 
 		socket.on('file:changed', function (filename, timestamp, content) {
 			$timeout(function () {
-				_onFileChanged(filename, timestamp, content);
+				_.forEach(_onFileChanged, function(handler) {
+					handler(filename, timestamp, content);
+				});
 			});
 		});
 
@@ -23,7 +25,7 @@ angular.module('FileSync')
 
 		return {
 			onFileChanged: function (f) {
-				_onFileChanged = f;
+				_onFileChanged.push(f);
 			},
 
 			onVisibilityStatesChanged: function (f) {
