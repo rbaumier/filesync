@@ -21,7 +21,7 @@ var sio = io(SOCKET_IO_URL, {
   multiplex: false
 });
 
-gaze(directory, function (err, watcher) {
+gaze(directory + '/**/*.js', function (err, watcher) {
   if (err) {
     throw err;
   }
