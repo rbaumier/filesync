@@ -57,3 +57,7 @@
     height: 30px;
     opacity: 1;
 }
+
+.file .controls{
+  float: right;
+}

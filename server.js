@@ -11,25 +11,24 @@ var config = require('./config')(logger);
 
 app.use(express.static(path.resolve(__dirname, './public')));
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-var server = app.listen(config.server.port, function () {
+var server = app.listen(config.server.port, function() {
   logger.info('Server listening on %s', config.server.port);
 });
 
 var sio = io(server);
 
-sio.set('authorization', function (handshakeData, accept) {
+sio.set('authorization', function(handshakeData, accept) {
   // @todo use something else than a private `query`
   handshakeData.isAdmin = handshakeData._query.access_token === config.auth.token;
   accept(null, true);
 });
-
 // @todo extract in its own
-sio.on('connection', function (socket) {
-  socket.on('file:changed', function () {
+sio.on('connection', function(socket) {
+  socket.on('file:changed', function() {
     if (!socket.conn.request.isAdmin) {
       // if the user is not admin
       // skip this
@@ -42,7 +41,7 @@ sio.on('connection', function (socket) {
 
   socket.visibility = 'visible';
 
-  socket.on('user-visibility:changed', function (state) {
+  socket.on('user-visibility:changed', function(state) {
     socket.visibility = state;
     sio.emit('users:visibility-states', getVisibilityCounts());
   });
